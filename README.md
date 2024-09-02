@@ -30,3 +30,9 @@ To get started with WebBrowser, follow these simple steps:
 
    ```bash
    git clone https://github.com/BL4Z3-Strike/WebBrowser.git
+2. **Navigate to the Project Directory:**
+   ```bash
+    cd WebBrowser
+3. **Run the Application:**
+4.  ```bash
+    python WebBrowser.py
