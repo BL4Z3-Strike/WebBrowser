@@ -34,5 +34,5 @@ To get started with WebBrowser, follow these simple steps:
    ```bash
     cd WebBrowser
 3. **Run the Application:**
-4.  ```bash
+   ```bash
     python WebBrowser.py
