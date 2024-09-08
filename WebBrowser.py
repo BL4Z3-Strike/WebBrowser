@@ -24,7 +24,7 @@ init_db()
 class SettingsDialog(QDialog):
     def __init__(self, parent=None):
         super(SettingsDialog, self).__init__(parent)
-        self.setWindowTitle("Ayarlar")
+        self.setWindowTitle("Settings")
         self.setGeometry(300, 300, 400, 200)
         layout = QVBoxLayout()
         
@@ -34,15 +34,12 @@ class SettingsDialog(QDialog):
         layout.addWidget(self.proxy_label)
         layout.addWidget(self.proxy_input)
         
-        # Reklam Engelleyici
-        self.block_ads = QCheckBox("Reklam Engelleyici Aktif")
+        self.block_ads = QCheckBox("Ad blocker active")
         layout.addWidget(self.block_ads)
         
-        # JavaScript Engelleyici
-        self.block_js = QCheckBox("JavaScript Engelle")
+        self.block_js = QCheckBox("Ban JavaScript")
         layout.addWidget(self.block_js)
         
-        # Uygula ve Kapat düğmeleri
         button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
         button_box.accepted.connect(self.accept)
         button_box.rejected.connect(self.reject)
@@ -53,32 +50,29 @@ class SettingsDialog(QDialog):
 class PasswordManagerDialog(QDialog):
     def __init__(self, parent=None):
         super(PasswordManagerDialog, self).__init__(parent)
-        self.setWindowTitle("Şifre Yöneticisi")
+        self.setWindowTitle("Password Manager")
         self.setGeometry(300, 300, 400, 300)
         
         layout = QVBoxLayout()
         
-        # Şifre Listesi
         self.password_list = QListWidget()
         layout.addWidget(self.password_list)
         
-        # Şifre Ekleme Bölümü
         form_layout = QFormLayout()
         self.website_input = QLineEdit()
         self.username_input = QLineEdit()
         self.password_input = QLineEdit()
         form_layout.addRow("Website:", self.website_input)
-        form_layout.addRow("Kullanıcı Adı:", self.username_input)
-        form_layout.addRow("Şifre:", self.password_input)
+        form_layout.addRow("Username:", self.username_input)
+        form_layout.addRow("Password:", self.password_input)
         
-        self.add_button = QPushButton("Ekle")
+        self.add_button = QPushButton("Add")
         self.add_button.clicked.connect(self.add_password)
         form_layout.addWidget(self.add_button)
         
         layout.addLayout(form_layout)
         
-        # Şifreyi Silme Düğmesi
-        self.delete_button = QPushButton("Sil")
+        self.delete_button = QPushButton("Delete")
         self.delete_button.clicked.connect(self.delete_password)
         layout.addWidget(self.delete_button)
         
@@ -97,7 +91,7 @@ class PasswordManagerDialog(QDialog):
             conn.close()
             self.load_passwords()
         else:
-            QMessageBox.warning(self, "Eksik Bilgi", "Tüm alanları doldurmalısınız.")
+            QMessageBox.warning(self, "Error", "You need to complete form.")
 
     def delete_password(self):
         selected_item = self.password_list.currentItem()
@@ -110,7 +104,7 @@ class PasswordManagerDialog(QDialog):
             conn.close()
             self.load_passwords()
         else:
-            QMessageBox.warning(self, "Seçim Hatası", "Silmek için bir şifre seçmelisiniz.")
+            QMessageBox.warning(self, "Choice Error", "You need to choose a password to delete.")
 
     def load_passwords(self):
         self.password_list.clear()
@@ -127,7 +121,7 @@ class TabBar(QTabBar):
         self.setMovable(True)
         self.tabCloseRequested.connect(self.close_tab)
         
-        # Set up style to display close button on hover
+       
         self.setStyleSheet("""
             QTabBar::tab {
                 padding: 5px;
@@ -156,69 +150,57 @@ class SimpleBrowser(QMainWindow):
     def __init__(self):
         super().__init__()
         
-        # Sekme widget'ını oluştur
         self.tabs = QTabWidget()
         self.tabs.setTabBar(TabBar(self))
         self.setCentralWidget(self.tabs)
         
-        # İlk sekme ekle
-        self.add_new_tab(QUrl("http://duckduckgo.com"), "Yeni Sekme")
+        self.add_new_tab(QUrl("http://duckduckgo.com"), "New Tab")
         
-        # Menü çubuğunu oluştur
         navbar = QToolBar()
         self.addToolBar(navbar)
         
-        # Yeni Sekme düğmesi
-        new_tab_btn = QAction(QIcon.fromTheme("tab-new"), "Yeni Sekme", self)
-        new_tab_btn.setStatusTip("Yeni Sekme aç")
+        new_tab_btn = QAction(QIcon.fromTheme("tab-new"), "New Tab", self)
+        new_tab_btn.setStatusTip("Open New Tab")
         new_tab_btn.triggered.connect(self.add_new_tab)
         navbar.addAction(new_tab_btn)
         
-        # Geri düğmesi
-        back_btn = QAction(QIcon.fromTheme("go-previous"), "Geri", self)
-        back_btn.setStatusTip("Geri git")
+        back_btn = QAction(QIcon.fromTheme("go-previous"), "Previous", self)
+        back_btn.setStatusTip("Go Back")
         back_btn.triggered.connect(self.current_tab_back)
         navbar.addAction(back_btn)
         
-        # İleri düğmesi
-        forward_btn = QAction(QIcon.fromTheme("go-next"), "İleri", self)
-        forward_btn.setStatusTip("İleri git")
+        forward_btn = QAction(QIcon.fromTheme("go-next"), "Next", self)
+        forward_btn.setStatusTip("Go Next")
         forward_btn.triggered.connect(self.current_tab_forward)
         navbar.addAction(forward_btn)
         
-        # Yenile düğmesi
-        reload_btn = QAction(QIcon.fromTheme("view-refresh"), "Yenile", self)
-        reload_btn.setStatusTip("Sayfayı yenile")
+        reload_btn = QAction(QIcon.fromTheme("view-refresh"), "Refresh", self)
+        reload_btn.setStatusTip("Refresh Page")
         reload_btn.triggered.connect(self.current_tab_reload)
         navbar.addAction(reload_btn)
         
-        # Adres çubuğu
         self.url_bar = QLineEdit()
         self.url_bar.returnPressed.connect(self.navigate_to_url)
         navbar.addWidget(self.url_bar)
         self.tabs.currentChanged.connect(self.update_url_bar)
         
-        # Ayarlar düğmesi
-        settings_btn = QAction(QIcon.fromTheme("preferences-system"), "Ayarlar", self)
-        settings_btn.setStatusTip("Ayarları aç")
+        settings_btn = QAction(QIcon.fromTheme("preferences-system"), "Setting", self)
+        settings_btn.setStatusTip("Open settings")
         settings_btn.triggered.connect(self.open_settings)
         navbar.addAction(settings_btn)
         
-        # Şifre Yönetici düğmesi
-        password_manager_btn = QAction(QIcon.fromTheme("preferences-system"), "Şifre Yönetici", self)
-        password_manager_btn.setStatusTip("Şifreleri yönet")
+        password_manager_btn = QAction(QIcon.fromTheme("preferences-system"), "Password Manager", self)
+        password_manager_btn.setStatusTip("Password Manage")
         password_manager_btn.triggered.connect(self.open_password_manager)
         navbar.addAction(password_manager_btn)
         
-        # Proxy ve reklam engelleyici
         self.proxy = None
         self.block_ads = False
         self.block_js = False
 
-        # Varsayılan ayarları yükle
         self.load_settings()
 
-    def add_new_tab(self, qurl=None, label="Yeni Sekme"):
+    def add_new_tab(self, qurl=None, label="New Tab"):
         if qurl is None:
             qurl = QUrl("http://duckduckgo.com")
         elif isinstance(qurl, str):
@@ -234,14 +216,13 @@ class SimpleBrowser(QMainWindow):
         browser.urlChanged.connect(lambda qurl: self.update_url_bar())
         browser.titleChanged.connect(lambda title: self.tabs.setTabText(self.tabs.currentIndex(), title))
         
-        # Otomatik doldurma
         browser.page().loadFinished.connect(lambda: browser.page().runJavaScript("document.body.innerText", self.process_page_content))
     
     def process_page_content(self, content):
         if self.block_js:
-            print("JavaScript engellendi.")
+            print("JavaScript banned.")
         else:
-            print("JavaScript çalışıyor.")
+            print("JavaScript working.")
 
     def current_tab(self):
         return self.tabs.currentWidget()
@@ -298,7 +279,6 @@ class SimpleBrowser(QMainWindow):
 
     def apply_settings(self):
         self.apply_no_script()
-        # Uygulama için başka ayarları burada ekleyebilirsiniz
     
     def apply_no_script(self):
         for i in range(self.tabs.count()):
